@@ -1,5 +1,7 @@
 package com.danielzou.somarketplace;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -9,15 +11,17 @@ import java.util.Date;
 public class PurchasedItem {
     public String itemId;
     public String comment;
-    public Date date;
+    private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    public String dateString;
 
     public PurchasedItem() {
     }
 
-    public PurchasedItem(String itemId, String comment, Date date) {
+    public PurchasedItem(String itemId, String comment) {
         this.itemId = itemId;
         this.comment = comment;
-        this.date = date;
+        Long time = System.currentTimeMillis();
+        this.dateString = dateFormat.format(time);
     }
 
     public String getItemId() {
@@ -28,6 +32,9 @@ public class PurchasedItem {
         return comment;
     }
 
+    public String getDateString() {
+        return dateString;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -38,7 +45,7 @@ public class PurchasedItem {
 
         if (itemId != null ? !itemId.equals(that.itemId) : that.itemId != null) return false;
         if (comment != null ? !comment.equals(that.comment) : that.comment != null) return false;
-        return date != null ? date.equals(that.date) : that.date == null;
+        return dateString != null ? dateString.equals(that.dateString) : that.dateString == null;
 
     }
 
@@ -46,7 +53,7 @@ public class PurchasedItem {
     public int hashCode() {
         int result = itemId != null ? itemId.hashCode() : 0;
         result = 31 * result + (comment != null ? comment.hashCode() : 0);
-        result = 31 * result + (date != null ? date.hashCode() : 0);
+        result = 31 * result + (dateString != null ? dateString.hashCode() : 0);
         return result;
     }
 }

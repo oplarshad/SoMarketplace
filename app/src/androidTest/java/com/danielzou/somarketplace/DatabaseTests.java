@@ -32,7 +32,7 @@ import static org.junit.Assert.*;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 @RunWith(AndroidJUnit4.class)
-public class ExampleInstrumentedTest {
+public class DatabaseTests {
     @Test
     public void useAppContext() throws Exception {
         // Context of the app under test.
@@ -43,18 +43,28 @@ public class ExampleInstrumentedTest {
 
     @Test
     public void addToCart() throws Exception {
-        final String user = "user3";
+        final String user = "user1";
         final String item = "item1";
-        final String comment = "This is great!";
+        final String comment = "This is a comment.";
         final CartItem cartItem = new CartItem(item, comment);
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference mCartItemsRef = database.getReference("cartItems");
-        mCartItemsRef.child(user).push().setValue(cartItem);
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference("cartItems");
+        ref.child(user).push().setValue(cartItem, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError != null) {
+                    System.out.println("Data could not be saved. " + databaseError.getMessage());
+                } else {
+                    System.out.println("Data saved successfully.");
+                }
+            }
+        });
+        ref.child(user).push().setValue(cartItem);
 
         final CountDownLatch writeSignal = new CountDownLatch(1);
 
-        mCartItemsRef.child(user).addChildEventListener(new ChildEventListener() {
+        ref.child(user).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 assertEquals(cartItem, dataSnapshot.getValue(CartItem.class));
@@ -90,8 +100,7 @@ public class ExampleInstrumentedTest {
         final String user = "user2";
         final String item = "item1";
         final String comment = "This is great!";
-        final Date date = new Date(System.currentTimeMillis());
-        final PurchasedItem purchasedItem = new PurchasedItem(item, comment, date);
+        final PurchasedItem purchasedItem = new PurchasedItem(item, comment);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference("purchasedItems");
@@ -160,5 +169,4 @@ public class ExampleInstrumentedTest {
 
         writeSignal.await(10, TimeUnit.SECONDS);
     }
-
 }

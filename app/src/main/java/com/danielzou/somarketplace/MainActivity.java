@@ -1,16 +1,17 @@
 package com.danielzou.somarketplace;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ui.ResultCodes;
+//import com.firebase.ui.auth.ui.email.AcquireEmailHelper;
 import com.google.firebase.auth.FirebaseAuth;
 
 import static com.firebase.ui.auth.ui.AcquireEmailHelper.RC_SIGN_IN;
+//import static com.firebase.ui.auth.ui.email.AcquireEmailHelper.RC_SIGN_IN;
 
 public class MainActivity extends AppCompatActivity {
 
