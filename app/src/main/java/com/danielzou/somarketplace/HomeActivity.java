@@ -14,6 +14,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -38,6 +40,17 @@ public class HomeActivity extends AppCompatActivity {
                                     finish();
                                 }
                             });
+                }
+            }
+        });
+        Button addToDatabase = (Button) findViewById(R.id.add_to_database);
+        addToDatabase.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (view.getId() == R.id.add_to_database) {
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+                    CartItem cartItem = new CartItem("database test", "database test");
+                    ref.push().setValue(cartItem);
                 }
             }
         });

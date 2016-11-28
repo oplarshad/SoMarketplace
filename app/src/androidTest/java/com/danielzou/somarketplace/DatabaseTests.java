@@ -34,35 +34,16 @@ import static org.junit.Assert.*;
 @RunWith(AndroidJUnit4.class)
 public class DatabaseTests {
     @Test
-    public void useAppContext() throws Exception {
-        // Context of the app under test.
-        Context appContext = InstrumentationRegistry.getTargetContext();
-
-        assertEquals("com.danielzou.somarketplace", appContext.getPackageName());
-    }
-
-    @Test
     public void addToCart() throws Exception {
         final String user = "user1";
         final String item = "item1";
         final String comment = "This is a comment.";
         final CartItem cartItem = new CartItem(item, comment);
 
+        final CountDownLatch writeSignal = new CountDownLatch(1);
+
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference("cartItems");
-        ref.child(user).push().setValue(cartItem, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (databaseError != null) {
-                    System.out.println("Data could not be saved. " + databaseError.getMessage());
-                } else {
-                    System.out.println("Data saved successfully.");
-                }
-            }
-        });
-        ref.child(user).push().setValue(cartItem);
-
-        final CountDownLatch writeSignal = new CountDownLatch(1);
 
         ref.child(user).addChildEventListener(new ChildEventListener() {
             @Override
@@ -93,6 +74,18 @@ public class DatabaseTests {
         });
 
         writeSignal.await(10, TimeUnit.SECONDS);
+
+
+        ref.child(user).push().setValue(cartItem, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError != null) {
+                    System.out.println("Data could not be saved. " + databaseError.getMessage());
+                } else {
+                    System.out.println("Data saved successfully.");
+                }
+            }
+        });
     }
 
     @Test
@@ -102,11 +95,10 @@ public class DatabaseTests {
         final String comment = "This is great!";
         final PurchasedItem purchasedItem = new PurchasedItem(item, comment);
 
+        final CountDownLatch writeSignal = new CountDownLatch(1);
+
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference("purchasedItems");
-        ref.child(user).push().setValue(purchasedItem);
-
-        final CountDownLatch writeSignal = new CountDownLatch(1);
 
         ref.child(user).addChildEventListener(new ChildEventListener() {
             @Override
@@ -137,6 +129,8 @@ public class DatabaseTests {
         });
 
         writeSignal.await(10, TimeUnit.SECONDS);
+
+        ref.child(user).push().setValue(purchasedItem);
     }
 
     @Test
@@ -150,7 +144,6 @@ public class DatabaseTests {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference("inventoryItems");
-        ref.child(itemId).setValue(inventoryItem);
 
         final CountDownLatch writeSignal = new CountDownLatch(1);
 
@@ -168,5 +161,7 @@ public class DatabaseTests {
         });
 
         writeSignal.await(10, TimeUnit.SECONDS);
+
+        ref.child(itemId).setValue(inventoryItem);
     }
 }

@@ -1,15 +1,12 @@
 package com.danielzou.somarketplace;
 
-import java.util.ArrayList;
-import java.util.Map;
-
 /**
  * This represents a cart item, which has an item id and a comment.
  */
 
 public class CartItem {
-    public String itemId;
-    public String comment;
+    private String itemId;
+    private String comment;
 
     public CartItem() {
 
