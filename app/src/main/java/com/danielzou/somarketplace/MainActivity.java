@@ -58,35 +58,36 @@ public class MainActivity extends BottomNavigationBarActivity {
                     AuthUI.getInstance().createSignInIntentBuilder().build(),
                     RC_SIGN_IN);
         }
+        startActivity(new Intent(getApplicationContext(), Main2Activity.class));
 
-        Button signOut = (Button) findViewById(R.id.sign_out);
-        signOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (v.getId() == R.id.sign_out) {
-                    AuthUI.getInstance()
-                            .signOut(MainActivity.this)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    // user is now signed out
-                                    startActivity(new Intent(MainActivity.this, MainActivity.class));
-                                    finish();
-                                }
-                            });
-                }
-            }
-        });
-        Button addToDatabase = (Button) findViewById(R.id.add_to_database);
-        addToDatabase.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (view.getId() == R.id.add_to_database) {
-                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-                    CartItem cartItem = new CartItem("database test", "database test");
-                    ref.push().setValue(cartItem);
-                }
-            }
-        });
+//        Button signOut = (Button) findViewById(R.id.sign_out);
+//        signOut.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (v.getId() == R.id.sign_out) {
+//                    AuthUI.getInstance()
+//                            .signOut(MainActivity.this)
+//                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                public void onComplete(@NonNull Task<Void> task) {
+//                                    // user is now signed out
+//                                    startActivity(new Intent(MainActivity.this, MainActivity.class));
+//                                    finish();
+//                                }
+//                            });
+//                }
+//            }
+//        });
+//        Button addToDatabase = (Button) findViewById(R.id.add_to_database);
+//        addToDatabase.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (view.getId() == R.id.add_to_database) {
+//                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+//                    CartItem cartItem = new CartItem("database test", "database test");
+//                    ref.push().setValue(cartItem);
+//                }
+//            }
+//        });
 //        GridView gridview = (GridView) findViewById(R.id.gridview);
 //        gridview.setAdapter(new ListAdapter() {
 //            @Override

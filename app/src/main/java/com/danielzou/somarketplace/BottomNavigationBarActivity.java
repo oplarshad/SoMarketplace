@@ -29,16 +29,10 @@ public class BottomNavigationBarActivity extends FragmentActivity {
                                 startActivity(mainIntent);
                                 break;
                             case R.id.action_feed:
-                                Intent feedIntent = new Intent(getApplicationContext(), FeedActivity.class);
-                                startActivity(feedIntent);
                                 break;
                             case R.id.action_cart:
-                                Intent cartIntent = new Intent(getApplicationContext(), CartActivity.class);
-                                startActivity(cartIntent);
                                 break;
                             case R.id.action_profile:
-                                Intent profileIntent = new Intent(getApplicationContext(), ProfileActivity.class);
-                                startActivity(profileIntent);
                                 break;
                         }
                         return false;
