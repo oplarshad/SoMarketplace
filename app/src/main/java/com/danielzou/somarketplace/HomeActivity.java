@@ -1,5 +1,6 @@
 package com.danielzou.somarketplace;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,7 +18,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends Activity {
 
     private static final String TAG = HomeActivity.class.getSimpleName();
     FirebaseAuth.AuthStateListener mAuthListener;
@@ -26,34 +27,6 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        Button signOut = (Button) findViewById(R.id.sign_out);
-        signOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (v.getId() == R.id.sign_out) {
-                    AuthUI.getInstance()
-                            .signOut(HomeActivity.this)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    // user is now signed out
-                                    startActivity(new Intent(HomeActivity.this, MainActivity.class));
-                                    finish();
-                                }
-                            });
-                }
-            }
-        });
-        Button addToDatabase = (Button) findViewById(R.id.add_to_database);
-        addToDatabase.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (view.getId() == R.id.add_to_database) {
-                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-                    CartItem cartItem = new CartItem("database test", "database test");
-                    ref.push().setValue(cartItem);
-                }
-            }
-        });
 //        mAuthListener = new FirebaseAuth.AuthStateListener() {
 //            @Override
 //            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
