@@ -7,114 +7,107 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context="com.danielzou.somarketplace.Main2Activity$PlaceholderFragment">
-
+    tools:context="com.danielzou.somarketplace.MainActivity$HomeFragment">
     <TextView
         android:id="@+id/section_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-
-    <android.support.v7.widget.GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/gridview"
+    <GridView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/grid_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:columnWidth="90dp"
+        android:columnWidth="128dp"
         android:numColumns="auto_fit"
         android:verticalSpacing="10dp"
         android:horizontalSpacing="10dp"
         android:stretchMode="columnWidth"
-        android:gravity="center">
-        <android.support.v7.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            card_view:cardCornerRadius="4dp"
-            android:layout_width="128dp"
-            android:layout_height="wrap_content"
-            card_view:cardBackgroundColor="@color/black">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-                <Button
-                    android:text="Sign Out"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/sign_out" />
-                <Button
-                    android:text="Add to database"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/add_to_database"/>
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
-        <android.support.v7.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:layout_width="128dp"
-            android:layout_height="wrap_content"
-            card_view:cardElevation="@dimen/cardview_default_elevation"
-            card_view:cardBackgroundColor="@color/black">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="128dp"
-                    android:src="@drawable/jeans512"/>
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="64dp"
-                    android:background="@color/colorAccent">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Jeans" />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="$40.00" />
-                    </LinearLayout>
-                </FrameLayout>
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
-        <android.support.v7.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:layout_width="128dp"
-            android:layout_height="wrap_content"
-            card_view:cardElevation="@dimen/cardview_default_elevation"
-            card_view:cardBackgroundColor="@color/black">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="128dp"
-                    android:src="@drawable/sweatshirt256"/>
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="64dp"
-                    android:background="@color/colorAccent">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Plaid Sweatshirt" />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="$50.00" />
-                    </LinearLayout>
-                </FrameLayout>
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
-    </android.support.v7.widget.GridLayout>
+        android:gravity="center"/>
+    <!--<android.support.v7.widget.GridLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_weight="1"-->
+        <!--android:columnWidth="90dp"-->
+        <!--android:numColumns="auto_fit"-->
+        <!--android:verticalSpacing="10dp"-->
+        <!--android:horizontalSpacing="10dp"-->
+        <!--android:stretchMode="columnWidth"-->
+        <!--android:gravity="center">-->
+        <!--<android.support.v7.widget.CardView-->
+            <!--xmlns:card_view="http://schemas.android.com/apk/res-auto"-->
+            <!--card_view:cardCornerRadius="4dp"-->
+            <!--android:layout_width="128dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--card_view:cardBackgroundColor="@color/black">-->
 
+        <!--</android.support.v7.widget.CardView>-->
+        <!--<android.support.v7.widget.CardView-->
+            <!--xmlns:card_view="http://schemas.android.com/apk/res-auto"-->
+            <!--android:layout_width="128dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--card_view:cardElevation="@dimen/cardview_default_elevation"-->
+            <!--card_view:cardBackgroundColor="@color/black">-->
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:orientation="vertical">-->
+                <!--<ImageView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="128dp"-->
+                    <!--android:src="@drawable/jeans512"/>-->
+                <!--<FrameLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="64dp"-->
+                    <!--android:background="@color/colorAccent">-->
+                    <!--<LinearLayout-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:orientation="vertical">-->
+                        <!--<TextView-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:text="Jeans" />-->
+                        <!--<TextView-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:text="$40.00" />-->
+                    <!--</LinearLayout>-->
+                <!--</FrameLayout>-->
+            <!--</LinearLayout>-->
+        <!--</android.support.v7.widget.CardView>-->
+        <!--<android.support.v7.widget.CardView-->
+            <!--xmlns:card_view="http://schemas.android.com/apk/res-auto"-->
+            <!--android:layout_width="128dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--card_view:cardElevation="@dimen/cardview_default_elevation"-->
+            <!--card_view:cardBackgroundColor="@color/black">-->
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:orientation="vertical">-->
+                <!--<ImageView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="128dp"-->
+                    <!--android:src="@drawable/sweatshirt256"/>-->
+                <!--<FrameLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="64dp"-->
+                    <!--android:background="@color/colorAccent">-->
+                    <!--<LinearLayout-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:orientation="vertical">-->
+                        <!--<TextView-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:text="Plaid Sweatshirt" />-->
+                        <!--<TextView-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:text="$50.00" />-->
+                    <!--</LinearLayout>-->
+                <!--</FrameLayout>-->
+            <!--</LinearLayout>-->
+        <!--</android.support.v7.widget.CardView>-->
+    <!--</android.support.v7.widget.GridLayout>-->
 </LinearLayout>

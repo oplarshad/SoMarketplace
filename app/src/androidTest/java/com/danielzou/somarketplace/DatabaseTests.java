@@ -19,7 +19,9 @@ import org.junit.runner.RunWith;
 
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -74,7 +76,6 @@ public class DatabaseTests {
         });
 
         writeSignal.await(10, TimeUnit.SECONDS);
-
 
         ref.child(user).push().setValue(cartItem, new DatabaseReference.CompletionListener() {
             @Override
@@ -135,23 +136,39 @@ public class DatabaseTests {
 
     @Test
     public void addInventoryItem() throws Exception {
-        final String itemId = "item1";
-        final String name = "ripped jeans";
-        final String imageRef = "/images/wala.jpg";
-        final int price = 5000;
-        final String description = "good jeans";
+        final String name = "Big Coat";
+        final String imageRef = "-";
+        final int price = 10000;
+        final String description = "This is a fluffy coat.";
         final InventoryItem inventoryItem = new InventoryItem(name, imageRef, price, description);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference("inventoryItems");
 
-        final CountDownLatch writeSignal = new CountDownLatch(1);
+        final CountDownLatch writeSignal = new CountDownLatch(2);
 
-        ref.child(itemId).addListenerForSingleValueEvent(new ValueEventListener() {
+        ref.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                System.out.println(inventoryItem.toString());
+                System.out.println(dataSnapshot.getValue(InventoryItem.class).toString());
                 assertEquals(inventoryItem, dataSnapshot.getValue(InventoryItem.class));
                 writeSignal.countDown();
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
             }
 
             @Override
@@ -160,8 +177,48 @@ public class DatabaseTests {
             }
         });
 
+        ref.push().setValue(inventoryItem, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError != null) {
+                    System.out.println("Data could not be saved. " + databaseError.getMessage());
+                } else {
+                    System.out.println("Data saved successfully.");
+                }
+            }
+        });
+
+        writeSignal.await(10, TimeUnit.SECONDS);
+    }
+
+    @Test
+    public void populateListings() throws Exception {
+        final String name = "Big Coat";
+        final String imageRef = "-";
+        final int price = 10000;
+        final String description = "This is a fluffy coat.";
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference("inventoryItems");
+
+        List<InventoryItem> listings = new ArrayList<InventoryItem>();
+        listings.add(new InventoryItem("Big Coat", imageRef, 10000, "This is a fluffy coat"));
+        listings.add(new InventoryItem("Small Coat", imageRef, 2000, "This is a light coat"));
+
+        final CountDownLatch writeSignal = new CountDownLatch(1);
+        ref.setValue(listings, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError != null) {
+                    System.out.println("Data could not be saved. " + databaseError.getMessage());
+                } else {
+                    System.out.println("Data saved successfully.");
+                }
+                writeSignal.countDown();
+            }
+        });
+
         writeSignal.await(10, TimeUnit.SECONDS);
 
-        ref.child(itemId).setValue(inventoryItem);
     }
 }

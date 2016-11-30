@@ -1,10 +1,13 @@
 package com.danielzou.somarketplace;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * This represents an inventory item, which has a name, image reference, price, and description.
  */
 
-public class InventoryItem {
+public class InventoryItem implements Parcelable {
     private String name;
     private String imageRef;
     private int price;
@@ -18,6 +21,26 @@ public class InventoryItem {
         this.imageRef = imageRef;
         this.price = price;
         this.description = description;
+    }
+
+    public InventoryItem(Parcel in) {
+        name = in.readString();
+        imageRef = in.readString();
+        price = in.readInt();
+        description = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(name);
+        parcel.writeString(imageRef);
+        parcel.writeInt(price);
+        parcel.writeString(description);
     }
 
     public String getName() {
@@ -59,4 +82,21 @@ public class InventoryItem {
         result = 31 * result + (description != null ? description.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return name + description + Integer.toString(price) + imageRef;
+    }
+
+    public static final Creator<InventoryItem> CREATOR = new Creator<InventoryItem>() {
+        @Override
+        public InventoryItem createFromParcel(Parcel parcel) {
+            return new InventoryItem(parcel);
+        }
+
+        @Override
+        public InventoryItem[] newArray(int size) {
+            return new InventoryItem[size];
+        }
+    };
 }
