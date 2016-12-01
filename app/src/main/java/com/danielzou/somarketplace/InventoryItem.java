@@ -8,6 +8,7 @@ import android.os.Parcelable;
  */
 
 public class InventoryItem implements Parcelable {
+    private String itemId;
     private String name;
     private String imageRef;
     private int price;
@@ -16,7 +17,8 @@ public class InventoryItem implements Parcelable {
     public InventoryItem() {
     }
 
-    public InventoryItem(String name, String imageRef, int price, String description) {
+    public InventoryItem(String itemId, String name, String imageRef, int price, String description) {
+        this.itemId = itemId;
         this.name = name;
         this.imageRef = imageRef;
         this.price = price;
@@ -24,6 +26,7 @@ public class InventoryItem implements Parcelable {
     }
 
     public InventoryItem(Parcel in) {
+        itemId = in.readString();
         name = in.readString();
         imageRef = in.readString();
         price = in.readInt();
@@ -37,10 +40,15 @@ public class InventoryItem implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(itemId);
         parcel.writeString(name);
         parcel.writeString(imageRef);
         parcel.writeInt(price);
         parcel.writeString(description);
+    }
+
+    public String getItemId() {
+        return itemId;
     }
 
     public String getName() {
@@ -67,6 +75,7 @@ public class InventoryItem implements Parcelable {
         InventoryItem that = (InventoryItem) o;
 
         if (price != that.price) return false;
+        if (itemId != null ? !itemId.equals(that.itemId) : that.itemId != null) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
         if (imageRef != null ? !imageRef.equals(that.imageRef) : that.imageRef != null)
             return false;
@@ -76,7 +85,8 @@ public class InventoryItem implements Parcelable {
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
+        int result = itemId != null ? itemId.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (imageRef != null ? imageRef.hashCode() : 0);
         result = 31 * result + price;
         result = 31 * result + (description != null ? description.hashCode() : 0);
@@ -85,7 +95,7 @@ public class InventoryItem implements Parcelable {
 
     @Override
     public String toString() {
-        return name + description + Integer.toString(price) + imageRef;
+        return itemId + name + description + Integer.toString(price) + imageRef;
     }
 
     public static final Creator<InventoryItem> CREATOR = new Creator<InventoryItem>() {

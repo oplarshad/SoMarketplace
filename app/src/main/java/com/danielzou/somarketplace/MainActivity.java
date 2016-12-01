@@ -11,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,7 +43,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.firebase.ui.auth.ui.AcquireEmailHelper.RC_SIGN_IN;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -82,78 +83,6 @@ public class MainActivity extends Activity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-
-
-//        GridView gridview = (GridView) findViewById(R.id.gridview);
-//        gridview.setAdapter(new ListAdapter() {
-//            @Override
-//            public boolean areAllItemsEnabled() {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean isEnabled(int i) {
-//                return false;
-//            }
-//
-//            @Override
-//            public void registerDataSetObserver(DataSetObserver dataSetObserver) {
-//
-//            }
-//
-//            @Override
-//            public void unregisterDataSetObserver(DataSetObserver dataSetObserver) {
-//
-//            }
-//
-//            @Override
-//            public int getCount() {
-//                return 0;
-//            }
-//
-//            @Override
-//            public Object getItem(int i) {
-//                return null;
-//            }
-//
-//            @Override
-//            public long getItemId(int i) {
-//                return 0;
-//            }
-//
-//            @Override
-//            public boolean hasStableIds() {
-//                return false;
-//            }
-//
-//            @Override
-//            public View getView(int i, View view, ViewGroup viewGroup) {
-//                return null;
-//            }
-//
-//            @Override
-//            public int getItemViewType(int i) {
-//                return 0;
-//            }
-//
-//            @Override
-//            public int getViewTypeCount() {
-//                return 0;
-//            }
-//
-//            @Override
-//            public boolean isEmpty() {
-//                return false;
-//            }
-//        });
-//
-//        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            public void onItemClick(AdapterView<?> parent, View v,
-//                                    int position, long id) {
-//                Toast.makeText(MainActivity.this, "" + position,
-//                        Toast.LENGTH_SHORT).show();
-//            }
-//        });
 
         //        mAuthListener = new FirebaseAuth.AuthStateListener() {
 //            @Override

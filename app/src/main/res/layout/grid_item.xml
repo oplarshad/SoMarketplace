@@ -16,8 +16,7 @@
             <ImageView
                 android:id="@+id/item_image"
                 android:layout_width="match_parent"
-                android:layout_height="128dp"
-                android:src="@drawable/jeans512"/>
+                android:layout_height="128dp"/>
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="64dp"

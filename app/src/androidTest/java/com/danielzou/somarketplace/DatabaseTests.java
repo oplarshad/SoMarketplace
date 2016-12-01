@@ -21,7 +21,9 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -140,7 +142,7 @@ public class DatabaseTests {
         final String imageRef = "-";
         final int price = 10000;
         final String description = "This is a fluffy coat.";
-        final InventoryItem inventoryItem = new InventoryItem(name, imageRef, price, description);
+        final InventoryItem inventoryItem = new InventoryItem("item0", name, imageRef, price, description);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference("inventoryItems");
@@ -193,17 +195,18 @@ public class DatabaseTests {
 
     @Test
     public void populateListings() throws Exception {
-        final String name = "Big Coat";
         final String imageRef = "-";
-        final int price = 10000;
-        final String description = "This is a fluffy coat.";
-
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference("inventoryItems");
 
-        List<InventoryItem> listings = new ArrayList<InventoryItem>();
-        listings.add(new InventoryItem("Big Coat", imageRef, 10000, "This is a fluffy coat"));
-        listings.add(new InventoryItem("Small Coat", imageRef, 2000, "This is a light coat"));
+        Map<String, InventoryItem> listings = new HashMap<String, InventoryItem>();
+        listings.put("item1", new InventoryItem("item1","Big Coat", "big_coat.jpg", 10000, "This is a fluffy coat"));
+        listings.put("item2", new InventoryItem("item2", "Small Coat", "small_coat.jpg", 2000, "This is a light coat"));
+        listings.put("item3", new InventoryItem("item3", "Skinny Cargo Pants", "skinny_cargo_pants.jpg", 4000, "This is a pair of skinny pants with big pockets"));
+        listings.put("item4", new InventoryItem("item4", "Light Blue Jeans", "light_blue_jeans.jpg", 4000, "This is a nice pair of jeans"));
+        listings.put("item5", new InventoryItem("item5", "Chelsea Boots", "chelsea_boots.jpg", 5000, "A comfortable pair of boots"));
+        listings.put("item6", new InventoryItem("item6", "Gray Beanie", "gray_beanie.jpg", 1500, "A warm, good-looking hat"));
+        listings.put("item7", new InventoryItem("item7", "Maroon Scarf", "maroon_scarf.jpg", 1500, "A knit scarf"));
 
         final CountDownLatch writeSignal = new CountDownLatch(1);
         ref.setValue(listings, new DatabaseReference.CompletionListener() {
