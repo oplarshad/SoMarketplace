@@ -22,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -29,6 +30,7 @@ import com.firebase.ui.auth.ui.ResultCodes;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -125,9 +127,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static class HomeFragment extends Fragment {
         private ListingAdapter mListingAdapter;
-
         private GridView mGridView;
-
 
         /**
          * The fragment argument representing the section number for this
@@ -204,6 +204,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static class CartFragment extends Fragment {
+        private CartAdapter mCartAdapter;
+        private ListView mCartListView;
+
         /**
          * The fragment argument representing the section number for this
          * fragment.
@@ -229,6 +232,22 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_cart, container, false);
+
+            List<CartItem> cartItems = new ArrayList<CartItem>();
+            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            final String uid = user.getUid();
+            mCartAdapter = new CartAdapter(this.getActivity(), CartItem.class, R.layout.cart_list_item, FirebaseDatabase.getInstance().getReference().child("cartItems").child(uid), cartItems);
+            mCartListView = (ListView) rootView.findViewById(R.id.cart_list_view);
+            mCartListView.setAdapter(mCartAdapter);
+            mCartListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                public void onItemClick(AdapterView<?> parent, View v,
+                                        int position, long id) {
+                    CartItem item = mCartAdapter.getItem(position);
+                    // remove from cart
+                }
+            });
+
             return rootView;
         }
     }
