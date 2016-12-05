@@ -2,9 +2,17 @@
     <string name="app_name">SoMarketplace</string>
     <string name="sign_in_cancelled">Sign-in cancelled</string>
     <string name="no_internet_connection">No internet connection</string>
-    <string name="title_activity_main2">Main2Activity</string>
-    <string name="action_settings">Settings</string>
-    <string name="section_format">Hello World from section: %1$d</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_details">DetailsActivity</string>
+    <string name="thank_you_for_your_purchase">Thank you for your purchase.</string>
+    <string name="proceed">Proceed</string>
+    <string name="purchase">Purchase</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="default_header">Default Header</string>
+    <string name="default_comment">Default Comment</string>
+    <string name="default_name">Default Name</string>
+    <string name="default_price">Default Price</string>
+    <string name="item_name">Item Name</string>
+    <string name="item_price">Item Price</string>
+    <string name="item_description">Item Description</string>
+    <string name="x_purchased_items">%1$s\'s purchased items</string>
 </resources>

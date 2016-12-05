@@ -17,7 +17,8 @@
         </activity>
         <activity
             android:name=".DetailsActivity"
-            android:label="@string/title_activity_details"></activity>
+            android:label="@string/title_activity_details" />
+        <activity android:name=".TransactionComplete"></activity>
     </application>
 
 </manifest>

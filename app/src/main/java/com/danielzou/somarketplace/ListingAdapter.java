@@ -14,13 +14,14 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
 
-public class ListingAdapter extends FirebaseListAdapter<InventoryItem> {
-
-    private List<InventoryItem> listings;
+/**
+ * The listing adapter populates the grid view of listings on the home fragment.
+ */
+class ListingAdapter extends FirebaseListAdapter<InventoryItem> {
 
     public ListingAdapter(Activity activity, Class<InventoryItem> modelClass, int modelLayout, Query ref, List<InventoryItem> listings) {
         super(activity, modelClass, modelLayout, ref);
-        this.listings = listings;
+        List<InventoryItem> listings1 = listings;
     }
 
     @Override
@@ -43,7 +44,7 @@ public class ListingAdapter extends FirebaseListAdapter<InventoryItem> {
         TextView itemPrice = (TextView) v.findViewById(R.id.item_price);
         TextView itemName = (TextView) v.findViewById(R.id.item_name);
         itemName.setText(model.getName());
-        itemPrice.setText(Integer.toString(model.getPrice()));
+        itemPrice.setText("$" + (model.getPrice()) + ".00");
     }
 
 }

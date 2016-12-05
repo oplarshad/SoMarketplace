@@ -2,32 +2,27 @@ package com.danielzou.somarketplace;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.app.Activity;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
+/**
+ * The details activity shows additional product information for a particular item listing.
+ */
 public class DetailsActivity extends AppCompatActivity {
 
     private String mComment;
@@ -44,16 +39,20 @@ public class DetailsActivity extends AppCompatActivity {
 
         // Reference to an image file in Firebase Storage
         StorageReference storageReference = storage.getReferenceFromUrl("gs://somarketplace-f1028.appspot.com");
-        StorageReference imageRef = storageReference.child(inventoryItem.getImageRef());
+        try {
+            StorageReference imageRef = storageReference.child(inventoryItem.getImageRef());
 
-        // ImageView in your Activity
-        ImageView imageView = (ImageView) findViewById(R.id.details_image_view);
+            // ImageView in your Activity
+            ImageView imageView = (ImageView) findViewById(R.id.details_image_view);
 
-        // Load the image using Glide
-        Glide.with(getApplicationContext())
-                .using(new FirebaseImageLoader())
-                .load(imageRef)
-                .into(imageView);
+            // Load the image using Glide
+            Glide.with(getApplicationContext())
+                    .using(new FirebaseImageLoader())
+                    .load(imageRef)
+                    .into(imageView);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         TextView itemName = (TextView) findViewById(R.id.details_item_name);
         itemName.setText(inventoryItem.getName());
@@ -66,6 +65,7 @@ public class DetailsActivity extends AppCompatActivity {
         addToCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
                 builder.setTitle("Enter a comment.");
 
@@ -80,6 +80,24 @@ public class DetailsActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mComment = input.getText().toString();
+                        final CartItem cartItem = new CartItem(inventoryItem.getItemId(), mComment);
+
+                        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        DatabaseReference ref = database.getReference();
+
+                        final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+                        ref.child("cartItems").child(uid).push().setValue(cartItem, new DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                if (databaseError != null) {
+                                    System.out.println("Data could not be saved. " + databaseError.getMessage());
+                                } else {
+                                    System.out.println("Data saved successfully.");
+                                }
+                            }
+                        });
+                        finish();
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -90,53 +108,7 @@ public class DetailsActivity extends AppCompatActivity {
                 });
 
                 builder.show();
-
-                final CartItem cartItem = new CartItem(inventoryItem.getItemId(), mComment);
-
-                final FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference ref = database.getReference();
-
-                final String Uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-                ref.child("cartItems").child(Uid).addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
-                    }
-
-                    @Override
-                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-                    }
-
-                    @Override
-                    public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                    }
-
-                    @Override
-                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
-                ref.child("cartItems").child(Uid).push().setValue(cartItem, new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                        if (databaseError != null) {
-                            System.out.println("Data could not be saved. " + databaseError.getMessage());
-                        } else {
-                            System.out.println("Data saved successfully.");
-                        }
-                    }
-                });
             }
         });
     }
-
 }

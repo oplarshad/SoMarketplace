@@ -6,15 +6,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+        <TextView
+            android:id="@+id/profile_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/purchased_items_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"/>
         <Button
-            android:text="Sign Out"
+            android:text="@string/sign_out"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/sign_out" />
-        <Button
-            android:text="Add to database"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/add_to_database"/>
     </LinearLayout>
 </LinearLayout>

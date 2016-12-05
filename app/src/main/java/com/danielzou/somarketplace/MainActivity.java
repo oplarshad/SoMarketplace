@@ -1,29 +1,25 @@
 package com.danielzou.somarketplace;
 
 
-import android.app.Activity;
-
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ui.ResultCodes;
@@ -36,31 +32,21 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import java.util.Map;
 
 import static com.firebase.ui.auth.ui.AcquireEmailHelper.RC_SIGN_IN;
 
+/**
+ * Contains four fragments: home fragment, feed fragment, cart fragment, and profile fragment.
+ */
 public class MainActivity extends AppCompatActivity {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v13.app.FragmentStatePagerAdapter}.
-     */
-    private SectionsPagerAdapter mSectionsPagerAdapter;
-
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
-    private ViewPager mViewPager;
+    private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    private FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,51 +66,27 @@ public class MainActivity extends AppCompatActivity {
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
+        /*
+      The {@link android.support.v4.view.PagerAdapter} that will provide
+      fragments for each of the sections. We use a
+      {@link FragmentPagerAdapter} derivative, which will keep every
+      loaded fragment in memory. If this becomes too memory intensive, it
+      may be best to switch to a
+      {@link android.support.v13.app.FragmentStatePagerAdapter}.
+     */
+        SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        /*
+      The {@link ViewPager} that will host the section contents.
+     */
+        ViewPager mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-
-        //        mAuthListener = new FirebaseAuth.AuthStateListener() {
-//            @Override
-//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-//                FirebaseUser user = firebaseAuth.getCurrentUser();
-//                if (user != null) {
-//                    // User is signed in
-//                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-//                } else {
-//                    // User is signed out
-//                    Log.d(TAG, "onAuthStateChanged:signed_out");
-//                }
-//                // ...
-//            }
-//        };
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main2, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
+    /**
+     * This inner class represents the home screen, which contains a grid view of product listings.
+     */
     public static class HomeFragment extends Fragment {
         private ListingAdapter mListingAdapter;
         private GridView mGridView;
@@ -155,10 +117,13 @@ public class MainActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
-            List<InventoryItem> listings = new ArrayList<InventoryItem>();
+            List<InventoryItem> listings = new ArrayList<>();
             mListingAdapter = new ListingAdapter(this.getActivity(), InventoryItem.class, R.layout.grid_item, FirebaseDatabase.getInstance().getReference().child("inventoryItems"), listings);
             mGridView = (GridView) rootView.findViewById(R.id.grid_view);
             mGridView.setAdapter(mListingAdapter);
+            /**
+             * Clicking on a listing brings up additional product information.
+             */
             mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(AdapterView<?> parent, View v,
                                         int position, long id) {
@@ -173,7 +138,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This inner class represents the social feed, which contains past purchasing activity from
+     * all users.
+     */
     public static class FeedFragment extends Fragment {
+        private SocialFeedAdapter mSocialFeedAdapter;
+        private ListView mSocialFeedListView;
+
         /**
          * The fragment argument representing the section number for this
          * fragment.
@@ -182,7 +154,6 @@ public class MainActivity extends AppCompatActivity {
 
         public FeedFragment() {
         }
-
         /**
          * Returns a new instance of this fragment for the given section
          * number.
@@ -199,10 +170,66 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_feed, container, false);
+
+            mSocialFeedAdapter = new SocialFeedAdapter(this.getActivity(), PurchasedItem.class, R.layout.social_feed_list_item, FirebaseDatabase.getInstance().getReference().child("allPurchasedItems"));
+            mSocialFeedListView = (ListView) rootView.findViewById(R.id.social_feed_list_view);
+            mSocialFeedListView.setAdapter(mSocialFeedAdapter);
+
+            /**
+             * Local copy of inventory items.
+             */
+            final Map<String, InventoryItem> inventoryItems = new HashMap<>();
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference ref = database.getReference();
+            ref.child("inventoryItems").addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    InventoryItem item = dataSnapshot.getValue(InventoryItem.class);
+                    inventoryItems.put(item.getItemId(), item);
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+            /**
+             * Clicking a feed item will bring the user to detailed product information.
+             */
+            mSocialFeedListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                public void onItemClick(AdapterView<?> parent, View v,
+                                        int position, long id) {
+                    PurchasedItem item = mSocialFeedAdapter.getItem(position);
+
+                    InventoryItem inventoryItem = inventoryItems.get(item.getItemId());
+                    Intent intent = new Intent(getContext(), DetailsActivity.class)
+                            .putExtra("item", inventoryItem);
+                    startActivity(intent);
+                }
+            });
+
             return rootView;
         }
     }
 
+    /**
+     * This fragment contains a list of items that the user has placed into his cart.
+     */
     public static class CartFragment extends Fragment {
         private CartAdapter mCartAdapter;
         private ListView mCartListView;
@@ -233,18 +260,77 @@ public class MainActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_cart, container, false);
 
-            List<CartItem> cartItems = new ArrayList<CartItem>();
             FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-            FirebaseUser user = firebaseAuth.getCurrentUser();
+            final FirebaseUser user = firebaseAuth.getCurrentUser();
+            final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+            final List<CartItem> cartItemList = new ArrayList<>();
+
             final String uid = user.getUid();
-            mCartAdapter = new CartAdapter(this.getActivity(), CartItem.class, R.layout.cart_list_item, FirebaseDatabase.getInstance().getReference().child("cartItems").child(uid), cartItems);
+            mCartAdapter = new CartAdapter(this.getActivity(), CartItem.class, R.layout.cart_list_item, FirebaseDatabase.getInstance().getReference().child("cartItems").child(uid));
             mCartListView = (ListView) rootView.findViewById(R.id.cart_list_view);
             mCartListView.setAdapter(mCartAdapter);
+            /**
+             * Clicking a cart item will remove it from the cart.
+             */
             mCartListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(AdapterView<?> parent, View v,
                                         int position, long id) {
-                    CartItem item = mCartAdapter.getItem(position);
-                    // remove from cart
+                    DatabaseReference itemRef = mCartAdapter.getRef(position);
+                    itemRef.removeValue();
+                }
+            });
+
+            /**
+             * Stores a local copy of cartItems.
+             */
+            ref.child("cartItems").child(uid).addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    CartItem cartItem = dataSnapshot.getValue(CartItem.class);
+                    cartItemList.add(cartItem);
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+            final Button purchaseCart = (Button) rootView.findViewById(R.id.purchase_cart);
+            /**
+             * Pressing the purchase cart will move items in the database from cartItems to purchasedItems
+             * and allPurchasedItems, and start the transactionComplete activity.
+             */
+            purchaseCart.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    List<PurchasedItem> purchasedItems = new ArrayList<>();
+                    for (CartItem cartItem: cartItemList) {
+                        PurchasedItem purchasedItem = new PurchasedItem(cartItem.getItemId(), cartItem.getComment(), user.getDisplayName());
+                        purchasedItems.add(purchasedItem);
+                    }
+                    for (PurchasedItem purchasedItem: purchasedItems) {
+                        ref.child("purchasedItems").child(uid).push().setValue(purchasedItem);
+                        ref.child("allPurchasedItems").push().setValue(purchasedItem);
+                    }
+                    ref.child("cartItems").child(uid).removeValue();
+                    Intent intent = new Intent(getContext(), TransactionComplete.class);
+                    startActivity(intent);
                 }
             });
 
@@ -252,7 +338,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This activity contains a list of items that the user has purchased.
+     */
     public static class ProfileFragment extends Fragment {
+        private PurchasedItemAdapter mPurchasedAdapter;
+        private ListView mPurchasedListView;
+
         /**
          * The fragment argument representing the section number for this
          * fragment.
@@ -295,17 +387,57 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
-            Button addToDatabase = (Button) rootView.findViewById(R.id.add_to_database);
-            addToDatabase.setOnClickListener(new View.OnClickListener() {
+            final Map<String, InventoryItem> inventoryItems = new HashMap<>();
+            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            final String uid = user.getUid();
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference ref = database.getReference();
+
+            ref.child("inventoryItems").addChildEventListener(new ChildEventListener() {
                 @Override
-                public void onClick(View view) {
-                    if (view.getId() == R.id.add_to_database) {
-                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-                        CartItem cartItem = new CartItem("database test", "database test");
-                        ref.push().setValue(cartItem);
-                    }
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    InventoryItem item = dataSnapshot.getValue(InventoryItem.class);
+                    inventoryItems.put(item.getItemId(), item);
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
                 }
             });
+            mPurchasedAdapter = new PurchasedItemAdapter(this.getActivity(), PurchasedItem.class, R.layout.purchased_list_item, FirebaseDatabase.getInstance().getReference().child("purchasedItems").child(uid));
+            mPurchasedListView = (ListView) rootView.findViewById(R.id.purchased_items_list_view);
+            mPurchasedListView.setAdapter(mPurchasedAdapter);
+            mPurchasedListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                public void onItemClick(AdapterView<?> parent, View v,
+                                        int position, long id) {
+                    PurchasedItem item = mPurchasedAdapter.getItem(position);
+
+                    InventoryItem inventoryItem = inventoryItems.get(item.getItemId());
+                    Intent intent = new Intent(getContext(), DetailsActivity.class)
+                            .putExtra("item", inventoryItem);
+                    startActivity(intent);
+                }
+            });
+            TextView profileTextView = (TextView) rootView.findViewById(R.id.profile_text_view);
+            Resources res = getResources();
+            profileTextView.setText(String.format(res.getString(R.string.x_purchased_items), user.getDisplayName()));
             return rootView;
         }
     }
@@ -335,8 +467,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_blank, container, false);
-            return rootView;
+            return inflater.inflate(R.layout.fragment_blank, container, false);
         }
     }
 
@@ -396,6 +527,7 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             // user is signed in!
             startActivity(new Intent(this, MainActivity.class));
+            user =  firebaseAuth.getCurrentUser();
             finish();
             return;
         }

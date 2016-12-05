@@ -21,21 +21,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Adapter for cart items.
+ * Adapter for purchased items in profile.
  */
-class CartAdapter extends FirebaseListAdapter<CartItem> {
+
+class PurchasedItemAdapter extends FirebaseListAdapter<PurchasedItem> {
 
     /**
-     * Local map of itemIds to inventoryItems
+     * Local copy of inventory items.
      */
     private final Map<String, InventoryItem> inventoryItems = new HashMap<>();
 
-    public CartAdapter(Activity activity, Class<CartItem> modelClass, int modelLayout, Query ref) {
+    public PurchasedItemAdapter(Activity activity, Class<PurchasedItem> modelClass, int modelLayout, Query ref) {
         super(activity, modelClass, modelLayout, ref);
 
+        /**
+         * Stores inventory items locally.
+         */
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference reference = database.getReference("inventoryItems");
-
         reference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -65,8 +68,18 @@ class CartAdapter extends FirebaseListAdapter<CartItem> {
         });
     }
 
+    /**
+     * New items are added to the top of the list, instead of the bottom.
+     * @param position
+     * @return
+     */
     @Override
-    protected void populateView(View v, CartItem model, int position) {
+    public PurchasedItem getItem(int position) {
+        return super.getItem(getCount() - position - 1);
+    }
+
+    @Override
+    protected void populateView(View v, PurchasedItem model, int position) {
         inventoryItems.get(model.getItemId());
         InventoryItem inventoryItem = inventoryItems.get(model.getItemId());
 
@@ -77,7 +90,7 @@ class CartAdapter extends FirebaseListAdapter<CartItem> {
         StorageReference imageRef = storageReference.child(inventoryItem.getImageRef());
 
         // ImageView in your Activity
-        ImageView imageView = (ImageView) v.findViewById(R.id.cart_item_image);
+        ImageView imageView = (ImageView) v.findViewById(R.id.purchased_item_image);
 
         // Load the image using Glide
         Glide.with(v.getContext())
@@ -85,9 +98,9 @@ class CartAdapter extends FirebaseListAdapter<CartItem> {
                 .load(imageRef)
                 .into(imageView);
 
-        TextView cartItemHeader = (TextView) v.findViewById(R.id.cart_item_header);
-        TextView cartItemComment = (TextView) v.findViewById(R.id.cart_item_comment);
-        cartItemHeader.setText(inventoryItem.getName() + " - $" + (inventoryItem.getPrice()) + ".00");
+        TextView cartItemHeader = (TextView) v.findViewById(R.id.purchased_item_header);
+        TextView cartItemComment = (TextView) v.findViewById(R.id.purchased_item_comment);
+        cartItemHeader.setText(inventoryItem.getName() + " - " + model.getDateString());
         cartItemComment.setText(model.getComment());
     }
 

@@ -6,7 +6,6 @@ import android.os.Parcelable;
 /**
  * This represents an inventory item, which has a name, image reference, price, and description.
  */
-
 public class InventoryItem implements Parcelable {
     private String itemId;
     private String name;

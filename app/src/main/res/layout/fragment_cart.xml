@@ -6,7 +6,13 @@
     <ListView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/cart_list_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:gravity="center"/>
 
+    <Button android:id="@+id/purchase_cart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/purchase"/>
 </LinearLayout>

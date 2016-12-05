@@ -3,8 +3,7 @@ package com.danielzou.somarketplace;
 /**
  * This represents a cart item, which has an item id and a comment.
  */
-
-public class CartItem {
+class CartItem {
     private String itemId;
     private String comment;
 
