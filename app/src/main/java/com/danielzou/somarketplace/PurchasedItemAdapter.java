@@ -80,28 +80,32 @@ class PurchasedItemAdapter extends FirebaseListAdapter<PurchasedItem> {
 
     @Override
     protected void populateView(View v, PurchasedItem model, int position) {
-        inventoryItems.get(model.getItemId());
-        InventoryItem inventoryItem = inventoryItems.get(model.getItemId());
+        try {
+            inventoryItems.get(model.getItemId());
+            InventoryItem inventoryItem = inventoryItems.get(model.getItemId());
 
-        FirebaseStorage storage = FirebaseStorage.getInstance();
+            FirebaseStorage storage = FirebaseStorage.getInstance();
 
-        // Reference to an image file in Firebase Storage
-        StorageReference storageReference = storage.getReferenceFromUrl("gs://somarketplace-f1028.appspot.com");
-        StorageReference imageRef = storageReference.child(inventoryItem.getImageRef());
+            // Reference to an image file in Firebase Storage
+            StorageReference storageReference = storage.getReferenceFromUrl("gs://somarketplace-f1028.appspot.com");
+            StorageReference imageRef = storageReference.child(inventoryItem.getImageRef());
 
-        // ImageView in your Activity
-        ImageView imageView = (ImageView) v.findViewById(R.id.purchased_item_image);
+            // ImageView in your Activity
+            ImageView imageView = (ImageView) v.findViewById(R.id.purchased_item_image);
 
-        // Load the image using Glide
-        Glide.with(v.getContext())
-                .using(new FirebaseImageLoader())
-                .load(imageRef)
-                .into(imageView);
+            // Load the image using Glide
+            Glide.with(v.getContext())
+                    .using(new FirebaseImageLoader())
+                    .load(imageRef)
+                    .into(imageView);
 
-        TextView cartItemHeader = (TextView) v.findViewById(R.id.purchased_item_header);
-        TextView cartItemComment = (TextView) v.findViewById(R.id.purchased_item_comment);
-        cartItemHeader.setText(inventoryItem.getName() + " - " + model.getDateString());
-        cartItemComment.setText(model.getComment());
+            TextView cartItemHeader = (TextView) v.findViewById(R.id.purchased_item_header);
+            TextView cartItemComment = (TextView) v.findViewById(R.id.purchased_item_comment);
+            cartItemHeader.setText(inventoryItem.getName() + " - " + model.getDateString());
+            cartItemComment.setText(model.getComment());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }
